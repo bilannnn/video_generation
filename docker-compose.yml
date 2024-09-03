@@ -1,0 +1,18 @@
+version: '3.9'
+
+x-build: &build
+  context: .
+  dockerfile: Dockerfile
+
+x-base: &base
+  image: ${IMAGE_NAME:-video-generation-service}
+  build: *build
+  volumes:
+    - .:/usr/src/app
+
+services:
+  app:
+    <<: *base
+    ports:
+      - "8000:8000"
+    entrypoint: ["uvicorn", "--factory", "app.asgi:build_app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
